@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 from asi.brain.arabella_brain import ArabellaBrain
-from asi.observability.ids import new_run_id
 
 
 def main() -> None:
@@ -13,9 +12,8 @@ def main() -> None:
         user_input = input("you> ").strip()
         if user_input.lower() in {"exit", "quit"}:
             break
-        run_id = new_run_id()
-        response = brain.respond(user_input, session_id="cli", run_id=run_id)
-        print(f"asi[{run_id}]> {response}")
+        response = brain.respond(user_input, session_id="cli")
+        print(f"asi> {response}")
 
 
 if __name__ == "__main__":

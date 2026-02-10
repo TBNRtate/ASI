@@ -22,8 +22,6 @@ def test_react_loop_final_path_returns_final_content() -> None:
         tools=_tools(),
         llm=NullBackend(),
         max_steps=4,
-        run_id="r1",
-        session_id="s1",
     )
     assert out == "NullBackend: hello"
 
@@ -37,8 +35,6 @@ def test_react_loop_tool_path_executes_and_injects_result() -> None:
         tools=_tools(),
         llm=NullBackend(),
         max_steps=4,
-        run_id="r1",
-        session_id="s1",
     )
 
     assert out == "Tool returned: hi"
