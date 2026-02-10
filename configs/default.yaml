@@ -1,0 +1,15 @@
+models:
+  backend: null_backend
+platform:
+  acceleration: cpu
+agent:
+  max_steps: 8
+memory:
+  backend: memory
+  k: 5
+safety:
+  permission_mode: deny
+tools:
+  enabled_tools: []
+prompts:
+  system: You are ASI.
