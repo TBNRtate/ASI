@@ -1,0 +1,23 @@
+models:
+  backend: null_backend
+platform:
+  acceleration: cpu
+agent:
+  max_steps: 8
+memory:
+  backend: sqlite
+  db_path: "./data/memory/memory.db"
+  embedding_dim: 384
+  index_path: "./data/memory/hnsw.index"
+  max_elements: 50000
+  ef_construction: 200
+  M: 16
+  ef_search: 50
+  k_default: 5
+  recency_half_life_days: 7
+safety:
+  permission_mode: deny
+tools:
+  enabled_tools: []
+prompts:
+  system: You are ASI.

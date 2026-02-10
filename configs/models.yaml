@@ -1,0 +1,4 @@
+models:
+  backend: null_backend
+platform:
+  acceleration: cpu
