@@ -1,15 +1,36 @@
 models:
   backend: null_backend
+
 platform:
   acceleration: cpu
+
 agent:
   max_steps: 8
+
 memory:
-  backend: memory
-  k: 5
+  # memory | sqlite
+  backend: sqlite
+
+  # Retrieval defaults
+  k_default: 5
+  recency_half_life_days: 7
+
+  # SQLite persistence (gitignored under ./data/)
+  db_path: "./data/memory/memory.db"
+
+  # Embeddings + vector index (rebuildable cache)
+  embedding_dim: 384
+  index_path: "./data/memory/hnsw.index"
+  max_elements: 50000
+  ef_construction: 200
+  M: 16
+  ef_search: 50
+
 safety:
   permission_mode: deny
+
 tools:
   enabled_tools: []
+
 prompts:
-  system: You are ASI.
+  system: "You are ASI."

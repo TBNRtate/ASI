@@ -5,7 +5,7 @@ from asi.brain.arabella_brain import ArabellaBrain
 
 
 def _write(path: Path, content: str) -> None:
-    path.write_text(dedent(content).strip() + "\n")
+    path.write_text(dedent(content).strip() + "\n", encoding="utf-8")
 
 
 def _write_config_dir(base: Path) -> None:
@@ -20,7 +20,7 @@ def _write_config_dir(base: Path) -> None:
           max_steps: 4
         memory:
           backend: memory
-          k: 5
+          k_default: 5
         safety:
           permission_mode: ask
           sandbox:
@@ -51,7 +51,7 @@ def _write_config_dir(base: Path) -> None:
             Be concise.
         """,
     )
-    _write(base / "models.yaml", "models:\n  backend: null_backend")
+    _write(base / "models.yaml", "models:\n  backend: null_backend\n")
     _write(
         base / "tools.yaml",
         """
@@ -100,13 +100,23 @@ def _write_config_dir(base: Path) -> None:
 def test_brain_respond_returns_string_and_stores_episode(tmp_path: Path) -> None:
     (tmp_path / "workspace").mkdir()
     _write_config_dir(tmp_path)
-    brain = ArabellaBrain(config_dir=tmp_path)
 
+    brain = ArabellaBrain(config_dir=tmp_path)
     response = brain.respond("hello", session_id="s1")
 
     assert isinstance(response, str)
     assert response == "NullBackend: hello"
+
     records = brain.memory_records
     assert len(records) == 1
-    assert records[0]["session_id"] == "s1"
-    assert records[0]["user"] == "hello"
+
+    rec = records[0]
+    # Memory schema should be stable across backends:
+    assert rec.get("type") == "episode"
+    assert "USER: hello" in rec.get("text", "")
+    assert "ASSISTANT: NullBackend: hello" in rec.get("text", "")
+
+    metadata = rec.get("metadata") or {}
+    assert metadata.get("session_id") == "s1"
+    assert metadata.get("user") == "hello"
+    assert metadata.get("assistant") == "NullBackend: hello"
