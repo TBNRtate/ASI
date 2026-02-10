@@ -1,0 +1,10 @@
+tools:
+  enabled_tools:
+    - shell
+    - file_read
+    - file_write
+  file_access:
+    allowed_read_paths:
+      - "./workspace"
+    allowed_write_paths:
+      - "./workspace"
