@@ -1,0 +1,29 @@
+safety:
+  permission_mode: ask
+  sandbox:
+    working_dir: "./workspace"
+    timeout_seconds: 20
+    allowed_commands:
+      - ls
+      - cat
+      - grep
+      - find
+      - python
+      - git
+    blocked_tokens:
+      - ";"
+      - "|"
+      - "&"
+      - ">"
+      - "<"
+      - "$"
+      - "`"
+  dangerous_patterns:
+    - "rm -rf"
+    - "mkfs"
+    - "dd if="
+    - ":(){"
+  confirmation_required:
+    - system
+    - network
+    - delete
