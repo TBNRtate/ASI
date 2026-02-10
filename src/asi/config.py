@@ -125,8 +125,6 @@ def _validate(config: dict[str, Any]) -> None:
         ("platform", "acceleration"),
         ("agent", "max_steps"),
         ("memory", "backend"),
-        ("memory", "db_path"),
-        ("memory", "embedding_dim"),
         ("memory", "k_default"),
         ("safety", "permission_mode"),
         ("tools", "enabled_tools"),
@@ -144,8 +142,15 @@ def _validate(config: dict[str, Any]) -> None:
             cursor = cursor[part]
         if not valid:
             missing.append(".".join(path))
+
+    memory_backend = str(config.get("memory", {}).get("backend", ""))
+    if memory_backend == "sqlite":
+        for key in ("db_path", "embedding_dim"):
+            if key not in config.get("memory", {}):
+                missing.append(f"memory.{key}")
+
     if missing:
-        raise ValueError(f"Missing required config keys: {', '.join(missing)}")
+        raise ValueError(f"Missing required config keys: {', '.join(sorted(set(missing)))}")
 
     if config["models"]["backend"] not in {"llama_cpp", "null_backend", "null"}:
         raise ValueError("models.backend must be one of: llama_cpp, null_backend, null")
@@ -153,7 +158,7 @@ def _validate(config: dict[str, Any]) -> None:
         raise ValueError("platform.acceleration must be one of: cpu, metal")
     if config["safety"]["permission_mode"] not in {"deny", "auto", "ask"}:
         raise ValueError("safety.permission_mode must be one of: deny, auto, ask")
-    if config["memory"]["backend"] not in {"memory", "sqlite"}:
+    if memory_backend not in {"memory", "sqlite"}:
         raise ValueError("memory.backend must be one of: memory, sqlite")
 
 
